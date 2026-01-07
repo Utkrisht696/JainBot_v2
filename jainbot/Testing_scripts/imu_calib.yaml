@@ -1,0 +1,48 @@
+gyro_bias_dps:
+- 0.21338333333333234
+- -0.44146666666666534
+- 0.07956666666666692
+accel_offset_g:
+- -0.004932460000000083
+- -0.011234573333333608
+- 0.012446033333333606
+accel_scale:
+- 0.9994262760148325
+- 1.0013749545709558
+- 1.0020988894432798
+mag_bias_uT:
+- 27.32581905682215
+- -21.34025355138452
+- -28.08605010154612
+mag_A_3x3:
+- - 1.2706183310990251
+  - 0.07947687721238914
+  - 0.1803122464286247
+- - 0.07947687721238914
+  - 1.110816035239866
+  - 0.04498797129564666
+- - 0.1803122464286247
+  - 0.04498797129564665
+  - 1.1208672136169302
+pose_map_info:
+  Front/Nose UP:
+  - 0
+  - 1
+  Back/Tail UP:
+  - 0
+  - -1
+  Left side UP:
+  - 1
+  - -1
+  Right side UP:
+  - 1
+  - 1
+  Top UP:
+  - 2
+  - -1
+  Bottom UP:
+  - 2
+  - 1
+notes: "Apply as:\n  accel_cal_g = (accel_raw_g - accel_offset_g) * accel_scale (element-wise)\n\
+  \  gyro_cal_dps = gyro_raw_dps - gyro_bias_dps\n  mag_cal_uT = A @ (mag_raw_uT -\
+  \ mag_bias_uT)\nMag Z was flipped in the reader to align frames."

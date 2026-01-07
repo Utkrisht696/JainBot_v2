@@ -1,0 +1,40 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 100  # Hz
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+    diff_drive_controller:
+      type: diff_drive_controller/DiffDriveController
+
+diff_drive_controller:
+  ros__parameters:
+    use_stamped_vel: false 
+    left_wheel_names:  ["left_wheel_joint"]
+    right_wheel_names: ["right_wheel_joint"]
+
+    # geometry (roughly your robot; fine to leave here for now)
+    wheel_separation: 0.381
+    wheel_radius: 0.05
+
+    # odom + frames
+    publish_rate: 50.0
+    base_frame_id: base_link
+    odom_frame_id: odom
+    enable_odom_tf: true
+
+    # limits (gentle for testing)
+    cmd_vel_timeout: 0.5
+    linear:
+      x:
+        has_velocity_limits: true
+        max_velocity: 0.6
+        has_acceleration_limits: true
+        max_acceleration: 0.8
+    angular:
+      z:
+        has_velocity_limits: true
+        max_velocity: 2.0
+        has_acceleration_limits: true
+        max_acceleration: 3.0

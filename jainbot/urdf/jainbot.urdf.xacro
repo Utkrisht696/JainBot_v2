@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="jainbot">
+
+  <link name="base_link"/>
+  <link name="left_wheel"/>
+  <link name="right_wheel"/>
+
+  <joint name="left_wheel_joint" type="continuous">
+    <parent link="base_link"/>
+    <child  link="left_wheel"/>
+  </joint>
+
+  <joint name="right_wheel_joint" type="continuous">
+    <parent link="base_link"/>
+    <child  link="right_wheel"/>
+  </joint>
+
+  <ros2_control name="JainbotSystem" type="system">
+    <hardware>
+      <plugin>jainbot/JainbotSystem</plugin>
+      
+      <!-- Encoders -->
+      <param name="enc_gpiochip">gpiochip4</param>
+      <param name="left_enc_a">16</param>
+      <param name="left_enc_b">26</param>
+      <param name="right_enc_a">17</param>
+      <param name="right_enc_b">27</param>
+
+      <!-- Wheel counts-per-revolution at the output shaft (after gearbox, quad x4) -->
+      <param name="cpr_wheel">1980</param>  <!-- 7 * 4 * 71.2 ≈ 1994 -->
+
+
+      <!-- GPIO & PWM config -->
+      <param name="gpiochip">gpiochip4</param>
+      <param name="m1_en">22</param>
+      <param name="m2_en">23</param>
+      <param name="m1_dir">24</param>
+      <param name="m2_dir">25</param>
+
+      <param name="pwmchip">pwmchip0</param>
+      <param name="pwm0_channel">0</param>
+      <param name="pwm1_channel">1</param>
+      <param name="pwm_period_ns">50000</param> <!-- 20 kHz -->
+
+      <!-- Control mapping -->
+      <param name="max_wheel_speed_radps">20.0</param> <!-- clamp for duty map -->
+      <param name="invert_left_dir">false</param>
+      <param name="invert_right_dir">false</param>
+    </hardware>
+
+    <joint name="left_wheel_joint">
+      <command_interface name="velocity"/>
+      <state_interface   name="position"/>
+      <state_interface   name="velocity"/>
+    </joint>
+
+    <joint name="right_wheel_joint">
+      <command_interface name="velocity"/>
+      <state_interface   name="position"/>
+      <state_interface   name="velocity"/>
+    </joint>
+  </ros2_control>
+
+</robot>

@@ -1,0 +1,6 @@
+<library path="jainbot">
+  <class
+    name="jainbot/JainbotSystem"
+    type="jainbot::JainbotSystem"
+    base_class_type="hardware_interface::SystemInterface"/>
+</library>
