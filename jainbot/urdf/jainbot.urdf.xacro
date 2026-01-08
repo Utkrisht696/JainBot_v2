@@ -167,7 +167,7 @@
     <parent link="base_link"/>
     <child link="imu_link"/>
     <!-- place it slightly above chassis center so it appears on top -->
-    <origin xyz="0.185 0.0 0.0" rpy="0 0 0"/>
+    <origin xyz="0.185 0.0 0.0" rpy="0 3.14159265359 0"/>
   </joint>
 
   <!-- =========================
