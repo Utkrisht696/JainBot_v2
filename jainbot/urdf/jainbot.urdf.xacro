@@ -13,9 +13,9 @@
        Wheels ~0.050 below chassis bottom.
        Chassis base plate thickness: 0.010 (just for RViz visuals)
          chassis half-height = 0.005
-         wheel center z = -(0.040 + 0.050) = -0.090
-         wheel bottom z = -0.090 - 0.0525 = -0.1425
-       So base_link is 0.1425m above the ground plane (base_footprint at z=0).
+         wheel center z = -(0.005 + 0.050) = -0.055
+         wheel bottom z = -0.055 - 0.0525 = -0.1075
+       So base_link is 0.1075m above the ground plane (base_footprint at z=0).
   -->
 
   <!-- ===== Base frames ===== -->
@@ -68,7 +68,7 @@
   <joint name="base_footprint_to_base_link" type="fixed">
     <parent link="base_footprint"/>
     <child link="base_link"/>
-    <origin xyz="0 0 0.1425" rpy="0 0 0"/>
+    <origin xyz="0 0 0.1075" rpy="0 0 0"/>
   </joint>
 
   <!-- ===== Wheels (links kept same names for ros2_control) ===== -->
@@ -101,14 +101,14 @@
   <joint name="left_wheel_joint" type="continuous">
     <parent link="base_link"/>
     <child  link="left_wheel"/>
-    <origin xyz="-0.135 0.195 -0.090" rpy="0 0 0"/>
+    <origin xyz="-0.135 0.195 -0.055" rpy="0 0 0"/>
     <axis xyz="0 1 0"/>
   </joint>
 
   <joint name="right_wheel_joint" type="continuous">
     <parent link="base_link"/>
     <child  link="right_wheel"/>
-    <origin xyz="-0.135 -0.195 -0.090" rpy="0 0 0"/>
+    <origin xyz="-0.135 -0.195 -0.055" rpy="0 0 0"/>
     <axis xyz="0 1 0"/>
   </joint>
 
@@ -136,18 +136,18 @@
   </link>
 
   <!-- Casters: x=+0.145, y=+/-0.0825; put them near ground -->
-  <!-- wheel ground contact is at z = -0.1425 in base_link frame -->
-  <!-- caster center z = -0.1425 + 0.020 = -0.1225 -->
+  <!-- wheel ground contact is at z = -0.1075 in base_link frame -->
+  <!-- caster center z = -0.1075 + 0.020 = -0.0875 -->
   <joint name="caster_left_joint" type="fixed">
     <parent link="base_link"/>
     <child link="caster_left"/>
-    <origin xyz="0.145 0.0825 -0.1225" rpy="0 0 0"/>
+    <origin xyz="0.145 0.0825 -0.0875" rpy="0 0 0"/>
   </joint>
 
   <joint name="caster_right_joint" type="fixed">
     <parent link="base_link"/>
     <child link="caster_right"/>
-    <origin xyz="0.145 -0.0825 -0.1225" rpy="0 0 0"/>
+    <origin xyz="0.145 -0.0825 -0.0875" rpy="0 0 0"/>
   </joint>
 
   <!-- ===== IMU (visual-only link, useful for TF) ===== -->
