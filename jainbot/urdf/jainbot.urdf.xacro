@@ -16,7 +16,10 @@
          wheel center z = -(0.005 + 0.050) = -0.055
          wheel bottom z = -0.055 - 0.0525 = -0.1075
        So base_link is 0.1075m above the ground plane (base_footprint at z=0).
+
+        URDF Works with real bot!!
   -->
+
 
   <!-- ===== Base frames ===== -->
   <link name="base_footprint"/>
