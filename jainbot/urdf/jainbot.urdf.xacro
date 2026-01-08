@@ -1,24 +1,153 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="jainbot">
 
-  <link name="base_link"/>
-  <link name="left_wheel"/>
-  <link name="right_wheel"/>
+  <!-- =========================
+       Dimensions (meters)
+       =========================
+       Chassis: 0.490 (x) x 0.345 (y)
+       Wheel dia: 0.105 => r = 0.0525
+       Wheel separation: 0.390 => y = +/- 0.195
+       Wheels are 0.110 from rear edge:
+         rear edge x = -0.245 (chassis centered)
+         wheel x = -0.245 + 0.110 = -0.135
+       Wheels ~0.050 below chassis bottom.
+       Chassis visual height assumed: 0.080 (just for RViz visuals)
+         chassis half-height = 0.040
+         wheel center z = -(0.040 + 0.050) = -0.090
+         wheel bottom z = -0.090 - 0.0525 = -0.1425
+       So base_link is 0.1425m above the ground plane (base_footprint at z=0).
+  -->
 
+  <!-- ===== Base frames ===== -->
+  <link name="base_footprint"/>
+
+  <!-- base_link is chassis center -->
+  <link name="base_link">
+    <!-- Chassis visual attached directly to base_link -->
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.490 0.345 0.080"/>
+      </geometry>
+      <material name="grey">
+        <color rgba="0.6 0.6 0.6 1.0"/>
+      </material>
+    </visual>
+  </link>
+
+  <!-- base_footprint at z=0 (ground), base_link raised above it -->
+  <joint name="base_footprint_to_base_link" type="fixed">
+    <parent link="base_footprint"/>
+    <child link="base_link"/>
+    <origin xyz="0 0 0.1425" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ===== Wheels (links kept same names for ros2_control) ===== -->
+  <link name="left_wheel">
+    <visual>
+      <!-- cylinder axis is Z; rotate so wheel axle is Y -->
+      <origin xyz="0 0 0" rpy="1.57079632679 0 0"/>
+      <geometry>
+        <cylinder radius="0.0525" length="0.030"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0.1 0.1 0.1 1.0"/>
+      </material>
+    </visual>
+  </link>
+
+  <link name="right_wheel">
+    <visual>
+      <origin xyz="0 0 0" rpy="1.57079632679 0 0"/>
+      <geometry>
+        <cylinder radius="0.0525" length="0.030"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0.1 0.1 0.1 1.0"/>
+      </material>
+    </visual>
+  </link>
+
+  <!-- Wheel joints kept as continuous (ros2_control uses these) -->
   <joint name="left_wheel_joint" type="continuous">
     <parent link="base_link"/>
     <child  link="left_wheel"/>
+    <origin xyz="-0.135 0.195 -0.090" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
   </joint>
 
   <joint name="right_wheel_joint" type="continuous">
     <parent link="base_link"/>
     <child  link="right_wheel"/>
+    <origin xyz="-0.135 -0.195 -0.090" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
   </joint>
 
+  <!-- ===== Casters (visual-only) ===== -->
+  <link name="caster_left">
+    <visual>
+      <geometry>
+        <sphere radius="0.020"/>
+      </geometry>
+      <material name="dark_grey">
+        <color rgba="0.25 0.25 0.25 1.0"/>
+      </material>
+    </visual>
+  </link>
+
+  <link name="caster_right">
+    <visual>
+      <geometry>
+        <sphere radius="0.020"/>
+      </geometry>
+      <material name="dark_grey">
+        <color rgba="0.25 0.25 0.25 1.0"/>
+      </material>
+    </visual>
+  </link>
+
+  <!-- Casters: x=+0.145, y=+/-0.0825; put them near ground -->
+  <!-- wheel ground contact is at z = -0.1425 in base_link frame -->
+  <!-- caster center z = -0.1425 + 0.020 = -0.1225 -->
+  <joint name="caster_left_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="caster_left"/>
+    <origin xyz="0.145 0.0825 -0.1225" rpy="0 0 0"/>
+  </joint>
+
+  <joint name="caster_right_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="caster_right"/>
+    <origin xyz="0.145 -0.0825 -0.1225" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ===== IMU (visual-only link, useful for TF) ===== -->
+  <link name="imu_link">
+    <visual>
+      <geometry>
+        <box size="0.030 0.030 0.010"/>
+      </geometry>
+      <material name="blue">
+        <color rgba="0.2 0.3 0.9 1.0"/>
+      </material>
+    </visual>
+  </link>
+
+  <!-- IMU: 60mm from front => x=+0.185, 175mm from sides => basically centerline (y=0) -->
+  <joint name="imu_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="imu_link"/>
+    <!-- place it slightly above chassis center so it appears on top -->
+    <origin xyz="0.185 0.0 0.045" rpy="0 0 0"/>
+  </joint>
+
+  <!-- =========================
+       ros2_control (UNCHANGED)
+       ========================= -->
   <ros2_control name="JainbotSystem" type="system">
     <hardware>
       <plugin>jainbot/JainbotSystem</plugin>
-      
+
       <!-- Encoders -->
       <param name="enc_gpiochip">gpiochip4</param>
       <param name="left_enc_a">16</param>
@@ -27,8 +156,7 @@
       <param name="right_enc_b">27</param>
 
       <!-- Wheel counts-per-revolution at the output shaft (after gearbox, quad x4) -->
-      <param name="cpr_wheel">1980</param>  <!-- 7 * 4 * 71.2 ≈ 1994 -->
-
+      <param name="cpr_wheel">1980</param>
 
       <!-- GPIO & PWM config -->
       <param name="gpiochip">gpiochip4</param>
@@ -40,10 +168,10 @@
       <param name="pwmchip">pwmchip0</param>
       <param name="pwm0_channel">0</param>
       <param name="pwm1_channel">1</param>
-      <param name="pwm_period_ns">50000</param> <!-- 20 kHz -->
+      <param name="pwm_period_ns">50000</param>
 
       <!-- Control mapping -->
-      <param name="max_wheel_speed_radps">20.0</param> <!-- clamp for duty map -->
+      <param name="max_wheel_speed_radps">20.0</param>
       <param name="invert_left_dir">false</param>
       <param name="invert_right_dir">false</param>
     </hardware>
