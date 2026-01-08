@@ -123,6 +123,8 @@ JainbotSystem::on_init(const hardware_interface::HardwareInfo & info)
   pi("left_enc_a", l_a_);  pi("left_enc_b", l_b_);
   pi("right_enc_a", r_a_); pi("right_enc_b", r_b_);
   pd("cpr_wheel", cpr_wheel_);
+  pb("invert_left_enc", invert_left_enc_);
+  pb("invert_right_enc", invert_right_enc_);
 
   // PID & shaping
   pd("pid_kp", pid_kp_);
@@ -445,8 +447,12 @@ JainbotSystem::read(const rclcpp::Time &, const rclcpp::Duration & period)
   const double dt = std::max(1e-6, period.seconds());
 
   for (int i=0;i<2;++i) {
-    const long long dcounts = snap_count[i] - last_count[i];
+    long long dcounts = snap_count[i] - last_count[i];
     last_count[i] = snap_count[i];
+
+    if ((i==0 && invert_left_enc_) || (i==1 && invert_right_enc_)) {
+      dcounts = -dcounts;
+    }
 
     const double dtheta = (static_cast<double>(dcounts) / cpr_wheel_) * TWO_PI;
     pos_[i] += dtheta;

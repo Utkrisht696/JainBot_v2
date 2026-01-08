@@ -47,6 +47,7 @@ private:
   std::string enc_gpiochip_name_ = "gpiochip4";
   int l_a_{16}, l_b_{26}, r_a_{17}, r_b_{27};
   double cpr_wheel_{1994.0}; // counts-per-rev @ wheel (after gearbox, x4)
+  bool invert_left_enc_{false}, invert_right_enc_{false};
 
   // Encoder handles
   gpiod_chip *enc_chip_{nullptr};

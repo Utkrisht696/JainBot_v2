@@ -201,8 +201,10 @@
 
       <!-- Control mapping -->
       <param name="max_wheel_speed_radps">20.0</param>
-      <param name="invert_left_dir">true</param>
-      <param name="invert_right_dir">true</param>
+      <param name="invert_left_dir">false</param>
+      <param name="invert_right_dir">false</param>
+      <param name="invert_left_enc">true</param>
+      <param name="invert_right_enc">true</param>
     </hardware>
 
     <joint name="left_wheel_joint">
