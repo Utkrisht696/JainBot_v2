@@ -22,7 +22,7 @@ def generate_launch_description():
     rsp = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
-        parameters=[robot_description],
+        parameters=[robot_description, {'publish_fixed_joints': True, 'use_tf_static': True}],
         output='both'
     )
 
