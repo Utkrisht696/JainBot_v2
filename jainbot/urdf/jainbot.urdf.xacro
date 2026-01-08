@@ -101,14 +101,14 @@
   <joint name="left_wheel_joint" type="continuous">
     <parent link="base_link"/>
     <child  link="left_wheel"/>
-    <origin xyz="0.135 0.195 -0.055" rpy="0 0 0"/>
+    <origin xyz="0.135 -0.195 -0.055" rpy="0 0 0"/>
     <axis xyz="0 -1 0"/>
   </joint>
 
   <joint name="right_wheel_joint" type="continuous">
     <parent link="base_link"/>
     <child  link="right_wheel"/>
-    <origin xyz="0.135 -0.195 -0.055" rpy="0 0 0"/>
+    <origin xyz="0.135 0.195 -0.055" rpy="0 0 0"/>
     <axis xyz="0 -1 0"/>
   </joint>
 
@@ -141,13 +141,13 @@
   <joint name="caster_left_joint" type="fixed">
     <parent link="base_link"/>
     <child link="caster_left"/>
-    <origin xyz="-0.145 0.0825 -0.0875" rpy="0 0 0"/>
+    <origin xyz="-0.145 -0.0825 -0.0875" rpy="0 0 0"/>
   </joint>
 
   <joint name="caster_right_joint" type="fixed">
     <parent link="base_link"/>
     <child link="caster_right"/>
-    <origin xyz="-0.145 -0.0825 -0.0875" rpy="0 0 0"/>
+    <origin xyz="-0.145 0.0825 -0.0875" rpy="0 0 0"/>
   </joint>
 
   <!-- ===== IMU (visual-only link, useful for TF) ===== -->
