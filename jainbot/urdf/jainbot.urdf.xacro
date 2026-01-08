@@ -1,140 +1,18 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="jainbot">
 
-  <!-- ===== base frames ===== -->
   <link name="base_link"/>
-
-  <link name="base_footprint"/>
-  <joint name="base_link_to_base_footprint" type="fixed">
-    <parent link="base_footprint"/>
-    <child link="base_link"/>
-    <!-- base_link is chassis center; base_footprint is at z=0 -->
-    <origin xyz="0 0 0" rpy="0 0 0"/>
-  </joint>
-
-  <!-- NOTE:
-       In RViz, the "Fixed Frame" should usually be base_link or base_footprint.
-       base_footprint is intended to be z=0. Since this is visualization-only,
-       we keep base_link and base_footprint coincident in TF and put geometry at the correct z offsets.
-  -->
-
-  <!-- ===== Chassis ===== -->
-  <link name="chassis_link">
-    <visual>
-      <!-- Chassis centered on base_link -->
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <box size="0.490 0.345 0.080"/>
-      </geometry>
-      <material name="grey">
-        <color rgba="0.6 0.6 0.6 1.0"/>
-      </material>
-    </visual>
-  </link>
-
-  <joint name="base_to_chassis" type="fixed">
-    <parent link="base_link"/>
-    <child link="chassis_link"/>
-    <origin xyz="0 0 0" rpy="0 0 0"/>
-  </joint>
-
-  <!-- ===== Drive wheels ===== -->
-  <link name="left_wheel">
-    <visual>
-      <!-- Cylinder axis is Z; rotate so wheel axle is Y -->
-      <origin xyz="0 0 0" rpy="1.57079632679 0 0"/>
-      <geometry>
-        <cylinder radius="0.0525" length="0.030"/>
-      </geometry>
-      <material name="black">
-        <color rgba="0.1 0.1 0.1 1.0"/>
-      </material>
-    </visual>
-  </link>
+  <link name="left_wheel"/>
+  <link name="right_wheel"/>
 
   <joint name="left_wheel_joint" type="continuous">
     <parent link="base_link"/>
-    <child link="left_wheel"/>
-    <!-- x=-0.135, y=+0.195 -->
-    <!-- z: chassis_h/2=0.04; wheel center is 0.05 below bottom => -0.04 - 0.05 = -0.09 -->
-    <origin xyz="-0.135 0.195 -0.090" rpy="0 0 0"/>
-    <axis xyz="0 1 0"/>
+    <child  link="left_wheel"/>
   </joint>
-
-  <link name="right_wheel">
-    <visual>
-      <origin xyz="0 0 0" rpy="1.57079632679 0 0"/>
-      <geometry>
-        <cylinder radius="0.0525" length="0.030"/>
-      </geometry>
-      <material name="black">
-        <color rgba="0.1 0.1 0.1 1.0"/>
-      </material>
-    </visual>
-  </link>
 
   <joint name="right_wheel_joint" type="continuous">
     <parent link="base_link"/>
-    <child link="right_wheel"/>
-    <origin xyz="-0.135 -0.195 -0.090" rpy="0 0 0"/>
-    <axis xyz="0 1 0"/>
-  </joint>
-
-  <!-- ===== Casters (visual spheres) ===== -->
-  <!-- caster radius chosen for looks -->
-  <link name="caster_left">
-    <visual>
-      <geometry>
-        <sphere radius="0.020"/>
-      </geometry>
-      <material name="dark_grey">
-        <color rgba="0.25 0.25 0.25 1.0"/>
-      </material>
-    </visual>
-  </link>
-
-  <joint name="caster_left_joint" type="fixed">
-    <parent link="base_link"/>
-    <child link="caster_left"/>
-    <!-- Put casters near ground: wheel bottom is at z = -0.090 - 0.0525 = -0.1425 -->
-    <!-- caster center at approx same ground contact: -0.1425 + 0.02 = -0.1225 -->
-    <origin xyz="0.145 0.0825 -0.1225" rpy="0 0 0"/>
-  </joint>
-
-  <link name="caster_right">
-    <visual>
-      <geometry>
-        <sphere radius="0.020"/>
-      </geometry>
-      <material name="dark_grey">
-        <color rgba="0.25 0.25 0.25 1.0"/>
-      </material>
-    </visual>
-  </link>
-
-  <joint name="caster_right_joint" type="fixed">
-    <parent link="base_link"/>
-    <child link="caster_right"/>
-    <origin xyz="0.145 -0.0825 -0.1225" rpy="0 0 0"/>
-  </joint>
-
-  <!-- ===== IMU ===== -->
-  <link name="imu_link">
-    <visual>
-      <geometry>
-        <box size="0.030 0.030 0.010"/>
-      </geometry>
-      <material name="blue">
-        <color rgba="0.2 0.3 0.9 1.0"/>
-      </material>
-    </visual>
-  </link>
-
-  <joint name="imu_joint" type="fixed">
-    <parent link="base_link"/>
-    <child link="imu_link"/>
-    <!-- x=+0.185, y=0.0, z on top-ish of chassis -->
-    <origin xyz="0.185 0.0 0.045" rpy="0 0 0"/>
+    <child  link="right_wheel"/>
   </joint>
 
   <ros2_control name="JainbotSystem" type="system">
