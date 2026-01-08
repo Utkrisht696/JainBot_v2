@@ -102,14 +102,14 @@
     <parent link="base_link"/>
     <child  link="left_wheel"/>
     <origin xyz="0.135 -0.195 -0.055" rpy="0 0 0"/>
-    <axis xyz="0 -1 0"/>
+    <axis xyz="0 1 0"/>
   </joint>
 
   <joint name="right_wheel_joint" type="continuous">
     <parent link="base_link"/>
     <child  link="right_wheel"/>
     <origin xyz="0.135 0.195 -0.055" rpy="0 0 0"/>
-    <axis xyz="0 -1 0"/>
+    <axis xyz="0 1 0"/>
   </joint>
 
   <!-- ===== Casters (visual-only) ===== -->
