@@ -8,8 +8,8 @@
        Wheel dia: 0.105 => r = 0.0525
        Wheel separation: 0.390 => y = +/- 0.195
        Wheels are 0.110 from rear edge:
-         rear edge x = +0.245 (chassis centered)
-         wheel x = +0.245 - 0.110 = +0.135
+         rear edge x = -0.245 (chassis centered)
+         wheel x = -0.245 + 0.110 = -0.135
        Wheels ~0.050 below chassis bottom.
        Chassis base plate thickness: 0.010 (just for RViz visuals)
          chassis half-height = 0.005
@@ -101,14 +101,14 @@
   <joint name="left_wheel_joint" type="continuous">
     <parent link="base_link"/>
     <child  link="left_wheel"/>
-    <origin xyz="0.135 -0.195 -0.055" rpy="0 0 0"/>
+    <origin xyz="-0.135 0.195 -0.055" rpy="0 0 0"/>
     <axis xyz="0 1 0"/>
   </joint>
 
   <joint name="right_wheel_joint" type="continuous">
     <parent link="base_link"/>
     <child  link="right_wheel"/>
-    <origin xyz="0.135 0.195 -0.055" rpy="0 0 0"/>
+    <origin xyz="-0.135 -0.195 -0.055" rpy="0 0 0"/>
     <axis xyz="0 1 0"/>
   </joint>
 
@@ -135,19 +135,19 @@
     </visual>
   </link>
 
-  <!-- Casters: x=-0.145, y=+/-0.0825; put them near ground -->
+  <!-- Casters: x=+0.145, y=+/-0.0825; put them near ground -->
   <!-- wheel ground contact is at z = -0.1075 in base_link frame -->
   <!-- caster center z = -0.1075 + 0.020 = -0.0875 -->
   <joint name="caster_left_joint" type="fixed">
     <parent link="base_link"/>
     <child link="caster_left"/>
-    <origin xyz="-0.145 -0.0825 -0.0875" rpy="0 0 0"/>
+    <origin xyz="0.145 0.0825 -0.0875" rpy="0 0 0"/>
   </joint>
 
   <joint name="caster_right_joint" type="fixed">
     <parent link="base_link"/>
     <child link="caster_right"/>
-    <origin xyz="-0.145 0.0825 -0.0875" rpy="0 0 0"/>
+    <origin xyz="0.145 -0.0825 -0.0875" rpy="0 0 0"/>
   </joint>
 
   <!-- ===== IMU (visual-only link, useful for TF) ===== -->
@@ -162,12 +162,12 @@
     </visual>
   </link>
 
-  <!-- IMU: 60mm from front => x=-0.185, 175mm from sides => basically centerline (y=0) -->
+  <!-- IMU: 60mm from front => x=+0.185, 175mm from sides => basically centerline (y=0) -->
   <joint name="imu_joint" type="fixed">
     <parent link="base_link"/>
     <child link="imu_link"/>
     <!-- place it slightly above chassis center so it appears on top -->
-    <origin xyz="-0.185 0.0 0.0" rpy="0 3.14159265359 0"/>
+    <origin xyz="0.185 0.0 0.0" rpy="0 3.14159265359 0"/>
   </joint>
 
   <!-- =========================
