@@ -17,6 +17,7 @@ def generate_launch_description():
     robot_description = {'robot_description': ParameterValue(robot_description_content, value_type=str)}
 
     controller_params = PathJoinSubstitution([pkg, 'config', 'controllers.yaml'])
+    ekf_params = PathJoinSubstitution([pkg, 'config', 'ekf.yaml'])
 
     # 1) Publish /robot_description (topic + param) → unblocks controller_manager
     rsp = Node(
@@ -55,4 +56,12 @@ def generate_launch_description():
         )]
     )
 
-    return LaunchDescription([rsp, cm, jsb, diff])
+    ekf = Node(
+        package='robot_localization',
+        executable='ekf_node',
+        name='ekf_filter_node',
+        parameters=[ekf_params],
+        output='both'
+    )
+
+    return LaunchDescription([rsp, cm, jsb, diff, ekf])
