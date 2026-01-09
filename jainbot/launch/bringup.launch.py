@@ -1,6 +1,8 @@
 from launch import LaunchDescription
+from launch.actions import IncludeLaunchDescription
 from launch.actions import TimerAction
 from launch.substitutions import Command, FindExecutable, PathJoinSubstitution
+from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
 from launch_ros.parameter_descriptions import ParameterValue
@@ -64,4 +66,23 @@ def generate_launch_description():
         output='both'
     )
 
-    return LaunchDescription([rsp, cm, jsb, diff, ekf])
+    realsense_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            PathJoinSubstitution([
+                get_package_share_directory('realsense2_camera'),
+                'launch',
+                'rs_launch.py'
+            ])
+        ),
+        launch_arguments={
+            'enable_sync': 'false',
+            'depth_module.depth_profile': '640x480x15',
+            'rgb_camera.color_profile': '640x480x15',
+            'align_depth': 'false',
+            'pointcloud.enable': 'false',
+            'enable_infra1': 'false',
+            'enable_infra2': 'false',
+        }.items()
+    )
+
+    return LaunchDescription([rsp, cm, jsb, diff, ekf, realsense_launch])
