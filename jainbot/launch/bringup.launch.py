@@ -75,10 +75,10 @@ def generate_launch_description():
             ])
         ),
         launch_arguments={
-            'enable_sync': 'false',
+            'enable_sync': 'true',
             'depth_module.depth_profile': '640x480x15',
             'rgb_camera.color_profile': '640x480x15',
-            'align_depth': 'false',
+            'align_depth': 'true',
             'pointcloud.enable': 'false',
             'enable_infra1': 'false',
             'enable_infra2': 'false',
