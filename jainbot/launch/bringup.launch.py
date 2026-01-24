@@ -1,6 +1,6 @@
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, ExecuteProcess, IncludeLaunchDescription, TimerAction
-from launch.substitutions import Command, FindExecutable, PathJoinSubstitution, LaunchConfiguration
+from launch.actions import IncludeLaunchDescription, TimerAction
+from launch.substitutions import Command, FindExecutable, PathJoinSubstitution
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
@@ -8,7 +8,6 @@ from launch_ros.parameter_descriptions import ParameterValue
 
 def generate_launch_description():
     pkg = get_package_share_directory('jainbot')
-    startup_delay = LaunchConfiguration('startup_delay')
 
     # Render URDF (xacro -> string)
     robot_description_content = Command([
@@ -38,27 +37,24 @@ def generate_launch_description():
     )
 
     # 3) Spawn controllers after a short delay to avoid race conditions
-    jsb_node = Node(
-        package='controller_manager',
-        executable='spawner',
-        arguments=['joint_state_broadcaster', '--controller-manager', '/controller_manager'],
-        output='both'
+    jsb = TimerAction(
+        period=1.0,
+        actions=[Node(
+            package='controller_manager',
+            executable='spawner',
+            arguments=['joint_state_broadcaster', '--controller-manager', '/controller_manager'],
+            output='both'
+        )]
     )
 
-    diff_node = Node(
-        package='controller_manager',
-        executable='spawner',
-        arguments=['diff_drive_controller', '--controller-manager', '/controller_manager'],
-        output='both'
-    )
-
-    jsb = TimerAction(period=1.0, actions=[jsb_node])
-    diff = TimerAction(period=2.0, actions=[diff_node])
-
-    # Delay ros2_control startup to give GPIO/encoders time to settle after boot.
-    control_stack = TimerAction(
-        period=startup_delay,
-        actions=[cm, jsb, diff]
+    diff = TimerAction(
+        period=2.0,
+        actions=[Node(
+            package='controller_manager',
+            executable='spawner',
+            arguments=['diff_drive_controller', '--controller-manager', '/controller_manager'],
+            output='both'
+        )]
     )
 
     ekf = Node(
@@ -90,19 +86,4 @@ def generate_launch_description():
         }.items()
     )
 
-    imu = ExecuteProcess(
-        cmd=['python3', PathJoinSubstitution([pkg, 'Testing_scripts', 'imu_ros.py'])],
-        output='both'
-    )
-
-    return LaunchDescription([
-        DeclareLaunchArgument(
-            'startup_delay',
-            default_value='2.0',
-            description='Delay (s) before starting ros2_control + spawners'
-        ),
-        rsp,
-        control_stack,
-        ekf,
-        realsense_launch,
-    ])
+    return LaunchDescription([rsp, cm, jsb, diff, ekf, realsense_launch])
