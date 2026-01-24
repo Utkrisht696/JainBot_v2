@@ -1,6 +1,5 @@
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription
-from launch.actions import TimerAction
+from launch.actions import ExecuteProcess, IncludeLaunchDescription, TimerAction
 from launch.substitutions import Command, FindExecutable, PathJoinSubstitution
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
@@ -85,4 +84,9 @@ def generate_launch_description():
         }.items()
     )
 
-    return LaunchDescription([rsp, cm, jsb, diff, ekf, realsense_launch])
+    imu = ExecuteProcess(
+        cmd=['python3', PathJoinSubstitution([pkg, 'Testing_scripts', 'imu_ros.py'])],
+        output='both'
+    )
+
+    return LaunchDescription([rsp, cm, jsb, diff, ekf, realsense_launch, imu])
