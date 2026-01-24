@@ -271,9 +271,6 @@ JainbotSystem::on_activate(const rclcpp_lifecycle::State &)
   pwm_set_(pwm0_path_, 0, true);
   pwm_set_(pwm1_path_, 0, true);
 
-  // Give encoder inputs a moment to settle after power-up, then re-sync levels.
-  std::this_thread::sleep_for(std::chrono::milliseconds(200));
-
   // Reset PID state
   i_term_ = {0.0, 0.0};
   last_err_ = {0.0, 0.0};
@@ -283,23 +280,8 @@ JainbotSystem::on_activate(const rclcpp_lifecycle::State &)
   {
     std::scoped_lock lk(enc_mtx_);
     count_ = {0,0};
-    auto rd = [](gpiod_line* a, gpiod_line* b){
-      int av = gpiod_line_get_value(a);
-      int bv = gpiod_line_get_value(b);
-      if (av < 0 || bv < 0) return 0;
-      return (av<<1) | bv;
-    };
-    prev_state_[0] = rd(l_a_line_, l_b_line_);   // left
-    prev_state_[1] = rd(r_a_line_, r_b_line_);   // right
+    // prev_state_ are set in on_configure() from current levels
   }
-
-  // Drain any stale edge events before starting the thread.
-  gpiod_line_event ev;
-  while (gpiod_line_event_read(l_a_line_, &ev) == 0) {}
-  while (gpiod_line_event_read(l_b_line_, &ev) == 0) {}
-  while (gpiod_line_event_read(r_a_line_, &ev) == 0) {}
-  while (gpiod_line_event_read(r_b_line_, &ev) == 0) {}
-
   enc_run_ = true;
   enc_thread_ = std::thread(&JainbotSystem::encoder_thread_, this);
 
