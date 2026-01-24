@@ -1,6 +1,7 @@
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription, TimerAction
-from launch.substitutions import Command, FindExecutable, PathJoinSubstitution
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, TimerAction
+from launch.conditions import IfCondition
+from launch.substitutions import Command, FindExecutable, PathJoinSubstitution, LaunchConfiguration
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
@@ -8,6 +9,7 @@ from launch_ros.parameter_descriptions import ParameterValue
 
 def generate_launch_description():
     pkg = get_package_share_directory('jainbot')
+    use_realsense = LaunchConfiguration('use_realsense')
 
     # Render URDF (xacro -> string)
     robot_description_content = Command([
@@ -83,7 +85,20 @@ def generate_launch_description():
             'pointcloud.enable': 'false',
             'enable_infra1': 'false',
             'enable_infra2': 'false',
-        }.items()
+        }.items(),
+        condition=IfCondition(use_realsense)
     )
 
-    return LaunchDescription([rsp, cm, jsb, diff, ekf, realsense_launch])
+    return LaunchDescription([
+        DeclareLaunchArgument(
+            'use_realsense',
+            default_value='true',
+            description='Enable RealSense camera launch'
+        ),
+        rsp,
+        cm,
+        jsb,
+        diff,
+        ekf,
+        realsense_launch,
+    ])
