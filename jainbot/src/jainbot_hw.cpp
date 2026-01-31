@@ -340,7 +340,7 @@ void jainbot::JainbotSystem::encoder_thread_()
   // watchdog to detect "no edges" and fall back
   long long last_progress_counts[2] = {0,0};
   auto last_progress_time = std::chrono::steady_clock::now();
-  bool sampling_mode = false;
+  bool sampling_mode = true;
 
   auto handle_edge = [&](gpiod_line* a, gpiod_line* b, int idx){
     int n = 0;
