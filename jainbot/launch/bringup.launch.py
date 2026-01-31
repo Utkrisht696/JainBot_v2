@@ -77,11 +77,11 @@ def generate_launch_description():
         ),
         launch_arguments={
             'enable_sync': 'true',
-            'depth_module.depth_profile': '640x480x15',
-            'rgb_camera.color_profile': '640x480x15',
+            'depth_module.depth_profile': '480x480x15',
+            'rgb_camera.color_profile': '480x480x15',
             'depth_module.global_time_enabled': 'true',
             'rgb_camera.global_time_enabled': 'true',
-            'align_depth.enable': 'true',
+            'align_depth.enable': 'false',
             'pointcloud.enable': 'false',
             'enable_infra1': 'false',
             'enable_infra2': 'false',
@@ -92,7 +92,7 @@ def generate_launch_description():
     return LaunchDescription([
         DeclareLaunchArgument(
             'use_realsense',
-            default_value='false',
+            default_value='true',
             description='Enable RealSense camera launch'
         ),
         rsp,
