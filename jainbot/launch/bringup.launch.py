@@ -92,7 +92,7 @@ def generate_launch_description():
     return LaunchDescription([
         DeclareLaunchArgument(
             'use_realsense',
-            default_value='true',
+            default_value='false',
             description='Enable RealSense camera launch'
         ),
         rsp,
