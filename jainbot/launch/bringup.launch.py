@@ -78,7 +78,7 @@ def generate_launch_description():
         launch_arguments={
             'enable_sync': 'true',
             'depth_module.depth_profile': '640x480x30',
-            'rgb_camera.color_profile': '',
+            'rgb_camera.color_profile': '640x480x30',
             'enable_color': 'false',
             'depth_module.global_time_enabled': 'true',
             'align_depth.enable': 'false',
