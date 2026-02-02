@@ -1,0 +1,29 @@
+ros2 run teleop_twist_keyboard teleop_twist_keyboard   --ros-args -p stamped:=true -p frame_id:=base_link -p repeat_rate:=30.0   -r /cmd_vel:=/diff_drive_controller/cmd_vel
+
+
+
+
+
+ros2 run rtabmap_slam rtabmap --ros-args \
+  -r rgbd_image:=/rgbd_image \
+  -r odom:=/odometry/filtered \
+  -p frame_id:=base_footprint \
+  -p wait_for_transform:=0.5 \
+  -p subscribe_rgbd:=true \
+  -p subscribe_rgb:=false \
+  -p subscribe_depth:=false \
+  -p rtabmap_args:="--Grid/FromDepth true \
+                    --Grid/MaxObstacleHeight 1.5 \
+                    --Grid/MinGroundHeight 0.05 \
+                    --Grid/MaxGroundHeight 0.2 \
+                    --Grid/CellSize 0.05"
+
+
+
+
+ros2 run rtabmap_sync rgbd_sync --ros-args \
+  -r rgb/image:=/camera/camera/color/image_raw \
+  -r depth/image:=/camera/camera/aligned_depth_to_color/image_raw \
+  -r rgb/camera_info:=/camera/camera/color/camera_info \
+  -p approx_sync:=true \
+  -p approx_sync_max_interval:=0.02
